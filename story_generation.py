@@ -5,7 +5,7 @@ api_key_openai = dotenv.get_key(dotenv_path=".env", key_to_get="OPENAI_API_KEY")
 
 client = OpenAI(api_key=api_key_openai)
 model = "gpt-4o-mini"
-prompt_story_generation = """Write a captivating story based on a theme provided by the user. The story should follow a narrative arc, including an engaging introduction, a well-developed plot with rising tension, and a satisfying resolution or cliffhanger. The tone, setting, and characters should align with the chosen theme. Use vivid descriptions, emotional depth, and immersive details to bring the story to life. Include moments of suspense, surprise, or introspection to maintain the reader’s interest.
+prompt_story_generation = """Write a captivating story based on a theme provided by the user. You need to put a lot of actions or dynamism, while keeping some suspens, so that the reader keeps reading the story. The story should follow a narrative arc, including an engaging introduction, a well-developed plot with rising tension, and a satisfying resolution or cliffhanger. The tone, setting, and characters should align with the chosen theme. Use vivid descriptions, emotional depth, and immersive details to bring the story to life. Include moments of suspense, surprise, or introspection to maintain the reader’s interest.
 For example, if the user specifies a theme like horror, create a setting that evokes dread and unease, with atmospheric elements like eerie locations, unsettling objects, or unexplained phenomena. Develop a protagonist with relatable emotions and reactions to the unfolding events. Conclude with a twist, unresolved mystery, or chilling realization to leave a lasting impression.
 The story should be approximately 500 words but can adapt based on the user's preference.
 Export to json, with no Markdown formatting, respecting the format:
@@ -29,7 +29,7 @@ prompt_story_split_description = """Given a story written by the user, break it 
 
 Requirements:  
 1. Chunk Size: Keep each chunk's text concise, focusing on a single scene or action that can be captured in one image.  
-2. Scene Description: Provide a detailed and vivid description of the corresponding scene, emphasizing atmosphere, spatial arrangement, and key visual elements.  
+2. Scene Description: Provide a detailed and vivid description of the corresponding scene, emphasizing atmosphere, spatial arrangement, and key visual elements. The scene needs to be visually engaging and evocative, as the viewer will use it to understand the story. It needs to be captivating for them, so they will stay engaged and watch it until the end. 
 3. Lighting and Details: Use the 'lighting' and 'details' fields to enhance the scene's mood and immersion.  
 4. Theme Alignment: Ensure that the scene descriptions match the tone and theme of the story (e.g., suspenseful and eerie for horror, whimsical for fantasy).  
 

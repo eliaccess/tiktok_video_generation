@@ -27,7 +27,7 @@ def generate_image(prompt, output_name):
     )
 
     print(output)
-    with open(f"{output_name}.png", "wb") as file:
+    with open(f"{output_name}", "wb") as file:
         file.write(output[0].read())
 
 if __name__ == "__main__":
