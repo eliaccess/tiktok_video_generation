@@ -20,11 +20,11 @@ def generate_voice(prompt, output_name):
         language="en",
     )
 
-    output_file_path = f'{output_name}.wav'
+    output_file_path = f'{output_name}'
     write(output_file_path, 24000, outputs['wav'])
 
 
 if __name__ == "__main__":
     prompt = "The air was thick with the scent of salt as Lily and her friends stepped off the ferry, the vibrant blue ocean stretching endlessly behind them."
-    output_name = "data/audio/output_name"
+    output_name = "data/audio/output_name.wav"
     generate_voice(prompt, output_name)
