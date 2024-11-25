@@ -91,10 +91,13 @@ def split_story_paragraphs(story):
     paragraphs = extract_story(paragraphs)
     return paragraphs
 
-if __name__ == "__main__":
-    theme = "horror, ghost, vacation"
+def generate_story_full(theme):
     story = generate_story(theme)
     story_json = extract_story(story)
     story_json["story"] = split_story_paragraphs(story_json["story"])
     export_story(story_json)
-    print(story)
+    return story_json
+
+if __name__ == "__main__":
+    theme = "horror, ghost, vacation"
+    story_json = generate_story_full(theme)
