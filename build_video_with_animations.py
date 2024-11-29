@@ -1,11 +1,18 @@
 # For moviepy version 2.1.1 and newest version of PIL
+import logging
 import random
 
+import cv2
 import numpy as np
 from moviepy import AudioFileClip, ImageClip, VideoClip, concatenate_videoclips
 
+logging.basicConfig(level=logging.INFO)
+
+logger = logging.getLogger(__name__)
+
 FPS = 24
 RESOLUTION = (1080, 1920)
+VIDEO_DURATION_MINIMUM = 60
 
 
 def add_effects_to_image(image_clip: ImageClip, duration: float) -> VideoClip:
@@ -32,9 +39,6 @@ def add_effects_to_image(image_clip: ImageClip, duration: float) -> VideoClip:
 
     # Apply transformations to the clip
     return image_clip.transform(apply_transform)
-
-
-import cv2
 
 
 def Zoom(clip: ImageClip, mode="in", position="center", zoom_factor=1):
@@ -161,7 +165,9 @@ def prepare_tiktok_clip(image_file, audio_file):
 
     # Load and resize image to fit TikTok's vertical format
     image_clip = ImageClip(image_file).with_duration(duration)
-    image_clip = image_clip.resized(height=RESOLUTION[1]).with_position(("center", "center"))
+    image_clip = image_clip.resized(height=RESOLUTION[1]).with_position(
+        ("center", "center")
+    )
 
     # Apply effects to the image
     image_clip = ZoomAndRotate(image_clip)
@@ -180,7 +186,9 @@ def sort_by_number(file_list):
     return sorted(file_list, key=lambda x: int(re.search(r"\d+", x).group()))
 
 
-def create_tiktok_video(image_files, audio_files, output_file="tiktok_video.mp4"):
+def create_tiktok_video_no_parts(
+    image_files, audio_files, output_file="tiktok_video.mp4"
+):
     """
     Create a TikTok-friendly video by combining images and audio.
     """
@@ -219,6 +227,69 @@ def create_tiktok_video(image_files, audio_files, output_file="tiktok_video.mp4"
     )
 
 
+def create_tiktok_videos(
+    image_files,
+    audio_files,
+    output_directory="output_videos",
+    video_duration_minimum=VIDEO_DURATION_MINIMUM,
+):
+    """
+    Create TikTok-friendly videos by combining images and audio for each part.
+    """
+    import os
+
+    os.makedirs(output_directory, exist_ok=True)  # Ensure the output directory exists
+
+    clips = []
+    part_counter = 1
+    current_duration = 0.0
+
+    # Separate title image and audio
+    image_title_file = [f for f in image_files if f.endswith("title.png")][0]
+    title_audio_files = sorted(
+        [f for f in audio_files if f.startswith("data/audio/title_")]
+    )
+
+    # Remove title image from the list
+    image_files = [f for f in image_files if f != image_title_file]
+    audio_files = [f for f in audio_files if f not in title_audio_files]
+
+    # Sort images and audio files numerically
+    image_files = sort_by_number(image_files)
+    audio_files = sort_by_number(audio_files)
+
+    # Create videos for each part
+    for title_audio_file in title_audio_files:
+        # Add title clip
+        title_clip = prepare_tiktok_clip(image_title_file, title_audio_file)
+        clips = [title_clip]  # Start the clips list with the title clip
+        current_duration = title_clip.duration
+
+        # Add scene clips until the minimum duration is reached
+        while current_duration < video_duration_minimum and image_files and audio_files:
+            image_file = image_files.pop(0)
+            audio_file = audio_files.pop(0)
+            scene_clip = prepare_tiktok_clip(image_file, audio_file)
+            clips.append(scene_clip)
+            current_duration += scene_clip.duration
+
+        # Create video for the current part
+        output_file = os.path.join(output_directory, f"tiktok_part_{part_counter}.mp4")
+        final_video = concatenate_videoclips(clips)
+        final_video.write_videofile(
+            output_file,
+            fps=FPS,
+            codec="libx264",
+            audio_codec="aac",
+            preset="ultrafast",
+            threads=4,
+        )
+        logger.info(f"Created video part {part_counter}: {output_file}")
+        part_counter += 1
+
+    logger.info("All TikTok videos have been created successfully.")
+
+
 def generate_tiktok_video(path_images: str, path_audio: str, output_file: str):
     import glob
 
@@ -226,9 +297,9 @@ def generate_tiktok_video(path_images: str, path_audio: str, output_file: str):
     image_files = glob.glob(f"{path_images}/*.png")
     audio_files = glob.glob(f"{path_audio}/*.wav")
 
-    create_tiktok_video(image_files, audio_files, output_file=f"{output_file}.mp4")
+    create_tiktok_videos(image_files, audio_files, output_directory=output_file)
 
 
 # Example usage
 if __name__ == "__main__":
-    generate_tiktok_video("data/pictures", "data/audio", "data/result/final_video")
+    generate_tiktok_video("data/pictures", "data/audio", "data/result/")

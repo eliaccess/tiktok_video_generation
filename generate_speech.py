@@ -13,7 +13,7 @@ model.load_checkpoint(config, checkpoint_dir=path_to_xtts, eval=True)
 model.to("mps")
 
 
-def generate_voice(prompt, output_name):
+def generate_voice(prompt, output_name) -> float:
     outputs = model.synthesize(
         prompt,
         config,
@@ -23,7 +23,14 @@ def generate_voice(prompt, output_name):
     )
 
     output_file_path = f"{output_name}"
-    write(output_file_path, 24000, outputs["wav"])
+    sampling_rate = 24000  # Assuming the sampling rate is 24 kHz
+    write(output_file_path, sampling_rate, outputs["wav"])
+
+    # Calculate duration in seconds
+    audio_length = len(outputs["wav"])
+    duration = audio_length / sampling_rate
+
+    return duration
 
 
 if __name__ == "__main__":

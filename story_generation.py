@@ -81,7 +81,7 @@ def extract_story(response):
 def export_story(content):
     import json
 
-    with open("data/story.json", "w", encoding="utf-8") as file:
+    with open("data/story/story.json", "w", encoding="utf-8") as file:
         file.write(json.dumps(content, ensure_ascii=False, indent=4))
 
 
