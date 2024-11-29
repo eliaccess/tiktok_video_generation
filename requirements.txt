@@ -6,3 +6,6 @@ accelerate==1.1.1
 transformers==4.46.3
 protobuf==5.28.3
 sentencepiece==0.2.0
+moviepy==2.1.1
+black==24.10.0
+isort==5.13.2

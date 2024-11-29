@@ -1,9 +1,10 @@
+import json
+import logging
+
+from build_video_with_animations import generate_tiktok_video
 from generate_images_api import generate_image
 from generate_speech import generate_voice
 from story_generation import generate_story_full
-from build_video_tests import generate_tiktok_video
-import json
-import logging
 
 logging.basicConfig(level=logging.INFO)
 
@@ -12,11 +13,13 @@ logger = logging.getLogger(__name__)
 story = {}
 security_prompt = "no nudity, no extremely gore content, no violence, no hate speech, no racism, no sexism, no copyrighted material"
 
+
 def load_story(path_story: str) -> dict:
     logger.info("Loading story data")
     with open(path_story, "r") as file:
         story = json.load(file)
     return story
+
 
 def generate_images(story: dict) -> None:
     logger.info("Generating images for title page")
@@ -60,7 +63,7 @@ def generate_audio(story: dict) -> None:
     "{title}"""
     filename = "data/audio/title.wav"
     generate_voice(prompt, filename)
-    
+
     logger.info("Generating audio for scenes")
     for scene in story["story"]:
         id = scene["id"]
@@ -74,10 +77,11 @@ def generate_audio(story: dict) -> None:
         generate_voice(prompt, filename)
     logger.info("Audio generated successfully")
 
+
 if __name__ == "__main__":
     theme = "horror, ghost, vacation"
-    # story_json = generate_story_full(theme)
+    story_json = generate_story_full(theme)
     story = load_story("data/story.json")
-    # generate_images(story)
+    generate_images(story)
     generate_audio(story)
-    # generate_tiktok_video("data/pictures", "data/audio", "data/result/final_video")
+    generate_tiktok_video("data/pictures", "data/audio", "data/result/final_video")

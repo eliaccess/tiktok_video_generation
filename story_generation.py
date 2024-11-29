@@ -1,5 +1,5 @@
-from openai import OpenAI
 import dotenv
+from openai import OpenAI
 
 api_key_openai = dotenv.get_key(dotenv_path=".env", key_to_get="OPENAI_API_KEY")
 
@@ -57,39 +57,44 @@ The JSON output would be:
 
 Use this format to structure the entire story in a way that each scene is visually and descriptively clear. Do not use any Markdown formatting."""
 
+
 def call_openai_chat(model, messages):
-    completion = client.chat.completions.create(
-        model=model,
-        messages=messages
-    )
+    completion = client.chat.completions.create(model=model, messages=messages)
     return completion.choices[0].message.content
+
 
 def generate_story(theme):
     messages = [
         {"role": "system", "content": prompt_story_generation},
-        {"role": "user", "content": theme}
+        {"role": "user", "content": theme},
     ]
     return call_openai_chat(model, messages)
 
+
 def extract_story(response):
     import json
+
     data = json.loads(response)
     return data
 
+
 def export_story(content):
     import json
+
     with open("data/story.json", "w", encoding="utf-8") as file:
         file.write(json.dumps(content, ensure_ascii=False, indent=4))
-        
+
+
 def split_story_paragraphs(story):
     paragraphs = []
     messages = [
         {"role": "system", "content": prompt_story_split_description},
-        {"role": "user", "content": story}
+        {"role": "user", "content": story},
     ]
     paragraphs = call_openai_chat(model, messages)
     paragraphs = extract_story(paragraphs)
     return paragraphs
+
 
 def generate_story_full(theme):
     story = generate_story(theme)
@@ -97,6 +102,7 @@ def generate_story_full(theme):
     story_json["story"] = split_story_paragraphs(story_json["story"])
     export_story(story_json)
     return story_json
+
 
 if __name__ == "__main__":
     theme = "horror, ghost, vacation"

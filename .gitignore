@@ -278,4 +278,9 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+### Data ignore
+data/audio/*
+data/pictures/*
+data/result/*
+
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,venv,python,macos,windows,linux

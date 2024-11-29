@@ -1,5 +1,5 @@
-import replicate
 import dotenv
+import replicate
 
 dotenv.load_dotenv()
 
@@ -9,6 +9,7 @@ prompt = """
 "details": "The sound of the whispering winds outside seems to swell, complementing the ghost's haunting words."
 "security": no nudity, no extremely gore content, no violence, no hate speech, no racism, no sexism, no copyrighted material"""
 
+
 def generate_image(prompt, output_name):
     input = {
         "output_format": "jpg",
@@ -16,19 +17,17 @@ def generate_image(prompt, output_name):
         "go_fast": False,
         "megapixels": "1",
         "output_quality": 100,
-        "prompt": prompt
+        "prompt": prompt,
     }
 
-    model = "black-forest-labs/flux-dev" # "black-forest-labs/flux-pro"
+    model = "black-forest-labs/flux-dev"  # "black-forest-labs/flux-pro"
 
-    output = replicate.run(
-        model,
-        input=input
-    )
+    output = replicate.run(model, input=input)
 
     print(output)
     with open(f"{output_name}", "wb") as file:
         file.write(output[0].read())
+
 
 if __name__ == "__main__":
     generate_image(prompt, "output_name.png")
