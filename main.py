@@ -122,9 +122,17 @@ def generate_audio(story: dict) -> None:
 
 
 if __name__ == "__main__":
-    theme = "horror, ghost, vacation"
+    # create the needed directories
+    import os
+    os.makedirs("data", exist_ok=True)
+    os.makedirs("data/story", exist_ok=True)
+    os.makedirs("data/audio", exist_ok=True)
+    os.makedirs("data/pictures", exist_ok=True)
+    os.makedirs("data/result", exist_ok=True)
+    os.makedirs("data/export", exist_ok=True)
+    theme = "horror, killer, new york, teenagers, night, dark"
     story_json = generate_story_full(theme)
     story = load_story("data/story/story.json")
     generate_images(story)
     generate_audio(story)
-    generate_tiktok_video("data/pictures", "data/audio", "data/result/final_video")
+    generate_tiktok_video("data/pictures", "data/audio", "data/result/")
