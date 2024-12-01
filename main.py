@@ -27,9 +27,11 @@ def generate_images(story: dict) -> None:
     logger.info("Generating images for title page")
     title = story["title"]
     theme = story["theme"]
+    summary = story["summary"]
     prompt = f"""
     "general_style": "very realistic, dark ambiance",
     "story": {title},
+    "summary": {summary},
     "theme": {theme},
     "security": {security_prompt}"""
 
@@ -130,7 +132,7 @@ if __name__ == "__main__":
     os.makedirs("data/pictures", exist_ok=True)
     os.makedirs("data/result", exist_ok=True)
     os.makedirs("data/export", exist_ok=True)
-    theme = "horror, killer, new york, teenagers, night, dark"
+    theme = "horror, suspense, supernatural, parallel world, dark ambiance, immersive, very realistic"
     story_json = generate_story_full(theme)
     story = load_story("data/story/story.json")
     generate_images(story)

@@ -7,12 +7,13 @@ client = OpenAI(api_key=api_key_openai)
 model = "gpt-4o-mini"
 prompt_story_generation = """Write a captivating story based on a theme provided by the user. You need to put a lot of actions or dynamism, while keeping some suspens, so that the reader keeps reading the story. The story should follow a narrative arc, including an engaging introduction, a well-developed plot with rising tension, and a satisfying resolution or cliffhanger. The tone, setting, and characters should align with the chosen theme. Use vivid descriptions, emotional depth, and immersive details to bring the story to life. Include moments of suspense, surprise, or introspection to maintain the reader’s interest.
 For example, if the user specifies a theme like horror, create a setting that evokes dread and unease, with atmospheric elements like eerie locations, unsettling objects, or unexplained phenomena. Develop a protagonist with relatable emotions and reactions to the unfolding events. Conclude with a twist, unresolved mystery, or chilling realization to leave a lasting impression.
-The story should be approximately 500 words but can adapt based on the user's preference.
+The story should be approximately 1000 words but can adapt based on the user's preference.
 Export to json, with no Markdown formatting, respecting the format:
 {
   "story": "Once upon a time...",
   "theme": "horror",
   "title": "The Haunted House"
+  "summary": "Friends going to a haunted house during the summer, facing a demon."
 }"""
 
 prompt_story_split_description = """Given a story written by the user, break it into small, coherent chunks and represent each chunk in JSON format. Each chunk should correspond to a segment of the story that can be visualized as a single image, with detailed descriptions to guide an image generation system. The JSON format should follow this structure:  
@@ -23,6 +24,7 @@ prompt_story_split_description = """Given a story written by the user, break it 
     "scene_description": "<detailed description of the scene corresponding to the text, with a focus on imagery and atmosphere>",
     "lighting": "<lighting description for the scene>",
     "details": "<specific objects, sounds, or actions that add depth to the scene>"
+    "tiktok_description": "<description for TikTok, with lots of hashtags to engage the community>"
   },
   ...
 ]
@@ -99,6 +101,7 @@ def split_story_paragraphs(story):
 def generate_story_full(theme):
     story = generate_story(theme)
     story_json = extract_story(story)
+    story_json["theme"] = theme
     story_json["story"] = split_story_paragraphs(story_json["story"])
     export_story(story_json)
     return story_json
